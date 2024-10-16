@@ -1,0 +1,48 @@
+.info {
+  width: 100%;
+  max-width: 736px;
+  margin: auto;
+  margin-top: 4rem;
+
+  font-weight: 700;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+.created,
+.completed {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.created p {
+  color: var(--blue);
+}
+
+.created span {
+  height: 1.4rem;
+  padding: 0 0.5rem;
+  background-color: var(--gray-400);
+  border-radius: 9999px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.completed p {
+  color: var(--purple);
+}
+
+.completed span {
+  height: 1.4rem;
+  padding: 0 0.5rem;
+  background-color: var(--gray-400);
+  border-radius: 9999px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
