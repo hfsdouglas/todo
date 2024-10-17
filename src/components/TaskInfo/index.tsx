@@ -1,16 +1,23 @@
 import styles from "./styles.module.css";
 
-export function TaskInfo() {
+interface TaskInfoProps {
+  completed: number;
+  total: number;
+}
+
+export function TaskInfo({ completed, total }: TaskInfoProps) {
   return (
     <div className={styles.info}>
       <div className={styles.created}>
         <p>Tarefas criadas</p>
-        <span>0</span>
+        <span>{total}</span>
       </div>
 
       <div className={styles.completed}>
         <p>Concluídas</p>
-        <span>2 de 5</span>
+        <span>
+          {completed} de {total}
+        </span>
       </div>
     </div>
   );
