@@ -9,6 +9,7 @@ import { PlusCircle } from "@phosphor-icons/react";
 import { Header } from "./components/Header";
 import { TaskInfo } from "./components/TaskInfo";
 import { Task } from "./components/Task";
+import { Empty } from "./components/Empty";
 
 interface TaskType {
   id: string;
@@ -92,19 +93,23 @@ export function App() {
         <TaskInfo total={totalTasks} completed={completedTasks} />
 
         <div className={styles.taskContainer}>
-          <ul>
-            {tasks.map((task) => {
-              return (
-                <Task
-                  key={task.id}
-                  id={task.id}
-                  description={task.description}
-                  completeTask={completeTask}
-                  deleteTask={deleteTask}
-                />
-              );
-            })}
-          </ul>
+          {tasks.length > 0 ? (
+            <ul>
+              {tasks.map((task) => {
+                return (
+                  <Task
+                    key={task.id}
+                    id={task.id}
+                    description={task.description}
+                    completeTask={completeTask}
+                    deleteTask={deleteTask}
+                  />
+                );
+              })}
+            </ul>
+          ) : (
+            <Empty />
+          )}
         </div>
       </main>
     </div>
