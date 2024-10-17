@@ -1,22 +1,86 @@
+import { type ChangeEvent, type FormEvent, useState } from "react";
+import { v4 as uuid } from "uuid";
+
 import "./styles/globals.css";
 import styles from "./app.module.css";
 
-import { PlusCircle, Trash } from "@phosphor-icons/react";
+import { PlusCircle } from "@phosphor-icons/react";
 
 import { Header } from "./components/Header";
-import { Checkbox } from "./components/Checkbox";
+import { TaskInfo } from "./components/TaskInfo";
+import { Task } from "./components/Task";
+
+interface TaskType {
+  id: string;
+  description: string;
+  isCompleted: true | false;
+}
 
 export function App() {
+  const [description, setDescription] = useState<string>("");
+  const [tasks, setTasks] = useState<TaskType[]>([]);
+
+  function handleNewDescriptionChange(event: ChangeEvent<HTMLInputElement>) {
+    setDescription(event.target.value);
+  }
+
+  function deleteTask(id: string) {
+    setTasks((state) => state.filter((task) => task.id !== id));
+  }
+
+  function completeTask(id: string) {
+    setTasks((state) => {
+      return state.map((task) => {
+        if (task.id === id) {
+          return task.isCompleted
+            ? { ...task, isCompleted: false }
+            : { ...task, isCompleted: true };
+        }
+
+        return task;
+      });
+    });
+  }
+
+  function handleAddTask(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (description.length === 0) {
+      return alert("Digite a descrição da tarefa para criar!");
+    }
+
+    const newTask = {
+      id: uuid(),
+      description,
+      isCompleted: false,
+    };
+
+    setTasks((state) => [...state, newTask]);
+    setDescription("");
+  }
+
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.reduce((total, current) => {
+    if (current.isCompleted) {
+      return total + 1;
+    }
+
+    return total;
+  }, 0);
+
   return (
     <div className={styles.container}>
       <Header />
 
       <main className={styles.main}>
-        <form className={styles.form}>
+        <form className={styles.form} onSubmit={handleAddTask}>
           <input
             type="text"
+            name="description"
             className={styles.input}
             placeholder="Adicione uma nova tarefa"
+            onChange={handleNewDescriptionChange}
+            value={description}
           />
 
           <button type="submit" className={styles.button}>
@@ -25,52 +89,21 @@ export function App() {
           </button>
         </form>
 
-        <div className={styles.info}>
-          <div className={styles.created}>
-            <p>Tarefas criadas</p>
-            <span>0</span>
-          </div>
-
-          <div className={styles.completed}>
-            <p>Concluídas</p>
-            <span>2 de 5</span>
-          </div>
-        </div>
+        <TaskInfo total={totalTasks} completed={completedTasks} />
 
         <div className={styles.taskContainer}>
           <ul>
-            <li className={styles.task}>
-              <div>
-                <Checkbox isChecked />
-                <p className={styles.description}>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis
-                  quod quam tempora mollitia facilis laudantium assumenda sed
-                  omnis, culpa inventore fugiat saepe aut, vel praesentium in
-                  laboriosam ipsa hic. Iusto.
-                </p>
-              </div>
-              <button type="button" className={styles.delete}>
-                <Trash size={22} />
-              </button>
-            </li>
-            <li className={styles.task}>
-              <div>
-                <Checkbox isChecked />
-                <p className={styles.description}>Tarefa 2</p>
-              </div>
-              <button type="button" className={styles.delete}>
-                <Trash size={22} />
-              </button>
-            </li>
-            <li className={styles.task}>
-              <div>
-                <Checkbox />
-                <p className={styles.description}>Tarefa 3</p>
-              </div>
-              <button type="button" className={styles.delete}>
-                <Trash size={22} />
-              </button>
-            </li>
+            {tasks.map((task) => {
+              return (
+                <Task
+                  key={task.id}
+                  id={task.id}
+                  description={task.description}
+                  completeTask={completeTask}
+                  deleteTask={deleteTask}
+                />
+              );
+            })}
           </ul>
         </div>
       </main>
